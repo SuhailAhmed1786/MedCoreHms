@@ -223,8 +223,28 @@ const login = async (req, res, next) => {
   }
 };
 
+const logout = async (req, res) => {
+  try {
+
+    const user = await User.findOne({ id: user._id });
+
+    return res.status(200).json({
+      success: true,
+      messsage: "Logout successfully!"
+
+    })
+
+
+  } catch (error) {
+    i
+
+  }
+}
+
+
 module.exports = {
   register,
   verifyEmail,
-  login
+  login,
+  logout      
 };

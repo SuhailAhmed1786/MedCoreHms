@@ -5,6 +5,8 @@ const path = require("path");
 const helmet = require("helmet");
 const cors = require("cors");
 const authRoutes = require("./src/routes/authRoutes");
+const patientRoutes = require("./src/routes/patientRoutes");
+// const appointmentRoutes = require("./src/routes/appointmentRoutes");
 const app = express();
 app.use(express.json());
 app.use(helmet());
@@ -17,7 +19,8 @@ app.get("/api/health", (req, res) => {
 });
 
 app.use("/api/auth", authRoutes);
-
+// app.use("/api/appointments", appointmentRoutes)
+app.use("/api/patients", patientRoutes);
 app.use("/uploads",express.static(path.join(__dirname, "uploads")));
 
 
