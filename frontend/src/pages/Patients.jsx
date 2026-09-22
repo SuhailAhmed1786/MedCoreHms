@@ -34,6 +34,7 @@ const Patients = () => {
       console.log("Patients API response:", response.data);
 
       const patientData = response.data?.data || [];
+      console.log('patientdatass', patientData)
 
       setPatients(patientData);
       setFilteredPatients(patientData);
@@ -361,11 +362,7 @@ const Patients = () => {
                             <button
                               className="action-view"
                               title="View patient"
-                              onClick={() =>
-                                navigate(
-                                  `/patients/${patient._id}`
-                                )
-                              }
+                              onClick={() => navigate(`/patients/${patient._id}`)}
                             >
                               <FaEye />
                             </button>
@@ -374,9 +371,7 @@ const Patients = () => {
                               className="action-edit"
                               title="Edit patient"
                               onClick={() =>
-                                navigate(
-                                  `/patients/${patient._id}/edit`
-                                )
+                                navigate(`/patients/${patient._id}/edit`)
                               }
                             >
                               <FaEdit />

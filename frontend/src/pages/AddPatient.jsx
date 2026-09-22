@@ -1,15 +1,10 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import {
-  FaArrowLeft,
-  FaSave,
-  FaUserInjured,
-} from "react-icons/fa";
+import {FaArrowLeft, FaSave,FaUserInjured } from "react-icons/fa";
 import api from "../services/api";
 
 const AddPatient = () => {
   const navigate = useNavigate();
-
   const [formData, setFormData] = useState({
     dateOfBirth: "",
     gender: "",
@@ -61,8 +56,7 @@ const AddPatient = () => {
     try {
       setLoading(true);
 
-      const response = await api.post(
-        "/patients",
+      const response = await api.post("/patients",
         {
           dateOfBirth: formData.dateOfBirth,
           gender: formData.gender,
@@ -81,15 +75,9 @@ const AddPatient = () => {
         }
       );
 
-      console.log(
-        "Create patient response:",
-        response.data
-      );
+      console.log("Create patient response:",response.data);
 
-      setSuccess(
-        response.data?.message ||
-          "Patient created successfully"
-      );
+      setSuccess(response.data?.message || "Patient created successfully");
 
       // Redirect after short delay
       setTimeout(() => {

@@ -11,6 +11,7 @@ import {
   FaPlus,
   FaBars,
   FaTimes,
+  FaUsers
 } from "react-icons/fa";
 
 import { useState } from "react";
@@ -18,7 +19,6 @@ import { useNavigate } from "react-router-dom";
 
 const Dashboard = () => {
   const navigate = useNavigate();
-
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const handleLogout = () => {
@@ -154,6 +154,16 @@ const Dashboard = () => {
             >
               <FaCalendarCheck />
               Appointments
+            </button>
+          )}
+
+           {role === "ADMIN" && (
+            <button
+              className="menu-item"
+              onClick={() => navigate("/staff")}
+            >
+              <FaUsers />
+              Staff Management
             </button>
           )}
 

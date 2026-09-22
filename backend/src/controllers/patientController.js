@@ -1,4 +1,3 @@
-const Appointment = require("../models/Appointment");
 const Patient = require("../models/Patient");
 
 const createPatient = async (req, res, next) => {
@@ -91,45 +90,33 @@ const getPatientById = async (req, res, next) => {
 }
 
 
-const createAppointment = async (req, res, next) => {
+const deletePatient = async (req, res, next) => {
   try {
-    const patient = await Patient.findOne({
-      user: req.user.id,
-    });
+    const patient = await Patient.findByIdAndDelete(req.params.id);
 
     if (!patient) {
       return res.status(404).json({
         success: false,
-        message: "Patient profile not found",
+        message: "Patient not found",
       });
     }
 
-    const {
-      doctor,
-      appointmentDate,
-      reason,
-    } = req.body;
-
-    const appointment = await Appointment.create({
-      patient: patient._id,
-      doctor,
-      appointmentDate,
-      reason,
-    });
-
-    res.status(201).json({
+    return res.status(200).json({
       success: true,
-      message: "Appointment booked successfully",
-      data: appointment,
-    });
+      message: "Patient deleted successfully",
+    })
+
   } catch (error) {
-    next(error);
+    next(error)
   }
-};
+
+
+}
+
 
 module.exports = {
   createPatient,
   getPatients,
   getPatientById,
-  createAppointment
+  deletePatient
 };

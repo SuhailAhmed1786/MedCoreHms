@@ -54,9 +54,5 @@ router.get(
 // );
 
 // // Delete patient
-// router.delete(
-//   "/:id",
-//   authorizeRoles("ADMIN", "RECEPTIONIST"),
-//   deletePatient
-// );
+router.delete("/:id",authorizeRoles("ADMIN", "RECEPTIONIST"),deletePatient);
 module.exports = router;

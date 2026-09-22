@@ -11,9 +11,11 @@ import VerifyEmail from "./pages/VerifyEmail";
 import Dashboard from "./pages/Dashboard";
 import Patients from "./pages/Patients";
 import AddPatient from "./pages/AddPatient";
-
+import StaffManagement from "./pages/StaffManagement";
 import ProtectedRoute from "./components/ProtectedRoute";
 import RoleRoute from "./components/RoleRoute";
+import PatientDetails from "./pages/PatientDetails";
+import EditPatient from "./pages/EditPatient";
 
 function App() {
   return (
@@ -49,8 +51,24 @@ function App() {
             element={<AddPatient />}
           />
 
+          <Route
+            path="/patients/:id"
+            element={<PatientDetails />}
+          />
+
+          <Route
+            path="/patients/:id/edit"
+            element={<EditPatient />}
+          />
+
+           <Route
+              path="/staff"
+              element={<StaffManagement />}
+            />
+
           {/* Admin-only routes */}
           <Route element={<RoleRoute allowedRoles={["ADMIN"]} />}>
+          
 
             <Route
               path="/doctors"
@@ -61,6 +79,7 @@ function App() {
               path="/settings"
               element={<div>Admin Settings</div>}
             />
+            
 
           </Route>
 

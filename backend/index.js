@@ -6,6 +6,7 @@ const helmet = require("helmet");
 const cors = require("cors");
 const authRoutes = require("./src/routes/authRoutes");
 const patientRoutes = require("./src/routes/patientRoutes");
+const userRoutes = require("./src/routes/userRoutes");
 // const appointmentRoutes = require("./src/routes/appointmentRoutes");
 const app = express();
 app.use(express.json());
@@ -21,8 +22,8 @@ app.get("/api/health", (req, res) => {
 app.use("/api/auth", authRoutes);
 // app.use("/api/appointments", appointmentRoutes)
 app.use("/api/patients", patientRoutes);
-app.use("/uploads",express.static(path.join(__dirname, "uploads")));
-
+app.use("/api/users", userRoutes);
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 app.get("/", (req, res) => {
   res.send("Express server is running");
