@@ -33,19 +33,12 @@ const Login = () => {
     try {
       setLoading(true);
 
-      const response = await api.post(
-        "/auth/login",
-        formData
-      );
-
+      const response = await api.post("/auth/login",formData);
       const { token, user } = response.data.data;
 
       // Save authentication information
       localStorage.setItem("token", token);
-      localStorage.setItem(
-        "user",
-        JSON.stringify(user)
-      );
+      localStorage.setItem("user",JSON.stringify(user));
 
       // Redirect
       navigate("/dashboard");

@@ -31,6 +31,8 @@ const Dashboard = () => {
     localStorage.getItem("user") || "{}"
   );
 
+  const role = user.role;
+
   const appointments = [
     {
       id: 1,
@@ -86,9 +88,8 @@ const Dashboard = () => {
       {/* Sidebar */}
 
       <aside
-        className={`dashboard-sidebar ${
-          sidebarOpen ? "sidebar-open" : ""
-        }`}
+        className={`dashboard-sidebar ${sidebarOpen ? "sidebar-open" : ""
+          }`}
       >
         <div className="sidebar-logo">
 
@@ -116,11 +117,16 @@ const Dashboard = () => {
             MAIN MENU
           </p>
 
-          <button className="menu-item active">
+          {/* Dashboard - All logged-in users */}
+          <button
+            className="menu-item active"
+            onClick={() => navigate("/dashboard")}
+          >
             <FaChartLine />
             Dashboard
           </button>
 
+          {/* Patients - All logged-in users */}
           <button
             className="menu-item"
             onClick={() => navigate("/patients")}
@@ -129,49 +135,66 @@ const Dashboard = () => {
             Patients
           </button>
 
-          <button
-            className="menu-item"
-            onClick={() => navigate("/doctors")}
-          >
-            <FaUserMd />
-            Doctors
-          </button>
+          {/* Doctors - ADMIN only */}
+          {role === "ADMIN" && (
+            <button
+              className="menu-item"
+              onClick={() => navigate("/doctors")}
+            >
+              <FaUserMd />
+              Doctors
+            </button>
+          )}
 
-          <button
-            className="menu-item"
-            onClick={() =>
-              navigate("/appointments")
-            }
-          >
-            <FaCalendarCheck />
-            Appointments
-          </button>
+          {/* Appointments */}
+          {["ADMIN", "DOCTOR", "RECEPTIONIST"].includes(role) && (
+            <button
+              className="menu-item"
+              onClick={() => navigate("/appointments")}
+            >
+              <FaCalendarCheck />
+              Appointments
+            </button>
+          )}
 
-          <button
-            className="menu-item"
-            onClick={() => navigate("/emr")}
-          >
-            <FaNotesMedical />
-            EMR
-          </button>
+          {/* EMR - ADMIN + DOCTOR */}
+          {["ADMIN", "DOCTOR"].includes(role) && (
+            <button
+              className="menu-item"
+              onClick={() => navigate("/emr")}
+            >
+              <FaNotesMedical />
+              EMR
+            </button>
+          )}
 
-          <button
-            className="menu-item"
-            onClick={() => navigate("/billing")}
-          >
-            <FaFileInvoiceDollar />
-            Billing
-          </button>
+          {/* Billing - ADMIN + RECEPTIONIST */}
+          {["ADMIN", "RECEPTIONIST"].includes(role) && (
+            <button
+              className="menu-item"
+              onClick={() => navigate("/billing")}
+            >
+              <FaFileInvoiceDollar />
+              Billing
+            </button>
+          )}
 
           <p className="menu-title mt-4">
             SYSTEM
           </p>
 
-          <button className="menu-item">
-            <FaCog />
-            Settings
-          </button>
+          {/* Settings - ADMIN only */}
+          {role === "ADMIN" && (
+            <button
+              className="menu-item"
+              onClick={() => navigate("/settings")}
+            >
+              <FaCog />
+              Settings
+            </button>
+          )}
 
+          {/* Logout - All users */}
           <button
             className="menu-item logout-item"
             onClick={handleLogout}
@@ -219,8 +242,8 @@ const Dashboard = () => {
               <div className="profile-avatar">
                 {user.username
                   ? user.username
-                      .charAt(0)
-                      .toUpperCase()
+                    .charAt(0)
+                    .toUpperCase()
                   : "U"}
               </div>
 
@@ -399,10 +422,9 @@ const Dashboard = () => {
 
                       <span>
                         <span
-                          className={`status ${
-                            appointment.status
-                              .toLowerCase()
-                          }`}
+                          className={`status ${appointment.status
+                            .toLowerCase()
+                            }`}
                         >
                           {appointment.status}
                         </span>
@@ -502,7 +524,6 @@ const Dashboard = () => {
           {/* Bottom Section */}
 
           <div className="dashboard-grid bottom-grid">
-
             {/* Recent Patients */}
 
             <div className="dashboard-card">

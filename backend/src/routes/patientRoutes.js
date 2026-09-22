@@ -4,30 +4,59 @@ const {
   createPatient,
   getPatients,
   getPatientById,
-//   updatePatient,
-//   deletePatient,
+  updatePatient,
+  deletePatient,
 } = require("../controllers/patientController");
 
 const authMiddleware = require("../middleware/authMiddleware");
+const authorizeRoles = require("../middleware/authorizeRoles");
 
 const router = express.Router();
 
-// All patient routes require authentication
 router.use(authMiddleware);
 
+// Admin, Doctor, Receptionist can view patients
+router.get(
+  "/",
+  authorizeRoles("ADMIN", "DOCTOR", "RECEPTIONIST"),
+  getPatients
+);
+
 // Create patient
-router.post("/", createPatient);
+router.post(
+  "/",
+  authorizeRoles("ADMIN", "RECEPTIONIST", "PATIENT"),
+  createPatient
+);
 
-// Get all patients
-router.get("/", getPatients);
-
-// // Get single patient
-router.get("/:id", getPatientById);
+// View patient
+router.get(
+  "/:id",
+  authorizeRoles(
+    "ADMIN",
+    "DOCTOR",
+    "RECEPTIONIST",
+    "PATIENT"
+  ),
+  getPatientById
+);
 
 // // Update patient
-// router.put("/:id", updatePatient);
+// router.put(
+//   "/:id",
+//   authorizeRoles(
+//     "ADMIN",
+//     "DOCTOR",
+//     "RECEPTIONIST",
+//     "PATIENT"
+//   ),
+//   updatePatient
+// );
 
 // // Delete patient
-// router.delete("/:id", deletePatient);
-
+// router.delete(
+//   "/:id",
+//   authorizeRoles("ADMIN", "RECEPTIONIST"),
+//   deletePatient
+// );
 module.exports = router;

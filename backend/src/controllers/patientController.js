@@ -44,13 +44,14 @@ const getPatients = async (req, res, next) => {
     if (!patient) {
       return res.status(404).json({
         success: true,
-        data: patient,
+        // data: patient,
         message: "Patient not found",
       })
     }
 
     else {
       return res.status(200).json({
+        data: patient,
         success: false,
         message: "Get All data successfully",
 
