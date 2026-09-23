@@ -16,7 +16,6 @@ const createPatient = async (req, res, next) => {
 
     const patient = await Patient.create({
       user: req.user.userId,
-
       dateOfBirth,
       gender,
       phone,
@@ -114,9 +113,37 @@ const deletePatient = async (req, res, next) => {
 }
 
 
+const updatePatient = async (req, res, next) => { 
+
+  const { id } = req.params;
+
+  try {
+    const updatedPatient = await Patient.findByIdAndUpdate(id, req.body, { new: true });
+
+    if (!updatedPatient) {  
+      return res.status(404).json({
+        success: false,
+        message: "Patient not found",
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: "Patient updated successfully",
+      data: updatedPatient,
+    });
+  }
+
+  catch (error) {
+    next(error);
+  }
+}
+
+
 module.exports = {
   createPatient,
   getPatients,
   getPatientById,
-  deletePatient
+  deletePatient,
+  updatePatient
 };

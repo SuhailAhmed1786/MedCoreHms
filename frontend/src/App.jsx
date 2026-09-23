@@ -16,6 +16,9 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import RoleRoute from "./components/RoleRoute";
 import PatientDetails from "./pages/PatientDetails";
 import EditPatient from "./pages/EditPatient";
+import Doctors from "./pages/Doctors";
+import DoctorDetails from "./pages/DoctorDetails";
+import EditDoctor from "./pages/EditDoctor";
 
 function App() {
   return (
@@ -61,46 +64,62 @@ function App() {
             element={<EditPatient />}
           />
 
-           <Route
-              path="/staff"
-              element={<StaffManagement />}
-            />
+          <Route
+            path="/staff"
+            element={<StaffManagement />}
+          />
+
+
 
           {/* Admin-only routes */}
           <Route element={<RoleRoute allowedRoles={["ADMIN"]} />}>
-          
 
             <Route
               path="/doctors"
-              element={<div>Manage Doctors</div>}
+              element={<Doctors />}
             />
 
             <Route
-              path="/settings"
-              element={<div>Admin Settings</div>}
+              path="/doctors/:id"
+              element={<DoctorDetails />}
             />
-            
 
-          </Route>
+            <Route
+              path="/doctors/:id/edit"
+              element={<EditDoctor />}
+            />
 
-          {/* Admin + Receptionist */}
           <Route
-            element={
-              <RoleRoute
-                allowedRoles={["ADMIN", "RECEPTIONIST"]}
-              />
-            }
-          >
-            <Route
-              path="/billing"
-              element={<div>Billing</div>}
-            />
-          </Route>
+            path="/doctors"
+            element={<div>Manage Doctors</div>}
+          />
+
+          <Route
+            path="/settings"
+            element={<div>Admin Settings</div>}
+          />
+
 
         </Route>
 
-      </Routes>
-    </BrowserRouter>
+        {/* Admin + Receptionist */}
+        <Route
+          element={
+            <RoleRoute
+              allowedRoles={["ADMIN", "RECEPTIONIST"]}
+            />
+          }
+        >
+          <Route
+            path="/billing"
+            element={<div>Billing</div>}
+          />
+        </Route>
+
+      </Route>
+
+    </Routes>
+    </BrowserRouter >
   );
 }
 

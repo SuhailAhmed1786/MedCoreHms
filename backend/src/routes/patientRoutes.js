@@ -42,16 +42,16 @@ router.get(
 );
 
 // // Update patient
-// router.put(
-//   "/:id",
-//   authorizeRoles(
-//     "ADMIN",
-//     "DOCTOR",
-//     "RECEPTIONIST",
-//     "PATIENT"
-//   ),
-//   updatePatient
-// );
+router.put(
+  "/:id",
+  authorizeRoles(
+    "ADMIN",
+    "DOCTOR",
+    "RECEPTIONIST",
+    "PATIENT"
+  ),
+  updatePatient
+);
 
 // // Delete patient
 router.delete("/:id",authorizeRoles("ADMIN", "RECEPTIONIST"),deletePatient);

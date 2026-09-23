@@ -10,6 +10,11 @@ const StaffManagement = () => {
     email: "",
     password: "",
     role: "DOCTOR",
+    specialization: "",
+    qualification: "",
+    licenseNumber: "",
+    phone: "",
+    consultationFee: "",
   });
 
   const [loading, setLoading] = useState(false);
@@ -44,7 +49,18 @@ const StaffManagement = () => {
         password: "",
         role: "DOCTOR",
       });
+      setFormData({
+        username: "",
+        email: "",
+        password: "",
+        role: "DOCTOR",
 
+        specialization: "",
+        qualification: "",
+        licenseNumber: "",
+        phone: "",
+        consultationFee: "",
+      });
     } catch (error) {
       setError(
         error.response?.data?.message ||
@@ -172,6 +188,119 @@ const StaffManagement = () => {
               </select>
             </div>
 
+            {formData.role === "DOCTOR" && (
+              <>
+                <hr />
+
+                <h5 className="mb-3">
+                  Doctor Information
+                </h5>
+
+                <div className="row">
+
+                  <div className="col-md-6 mb-3">
+                    <label className="form-label">
+                      Specialization
+                    </label>
+
+                    <input
+                      type="text"
+                      name="specialization"
+                      className="form-control"
+                      value={formData.specialization}
+                      onChange={handleChange}
+                      placeholder="e.g. Cardiologist"
+                      required
+                    />
+                  </div>
+
+                  <div className="col-md-6 mb-3">
+                    <label className="form-label">
+                      Qualification
+                    </label>
+
+                    <input
+                      type="text"
+                      name="qualification"
+                      className="form-control"
+                      value={formData.qualification}
+                      onChange={handleChange}
+                      placeholder="e.g. MBBS, MD"
+                      required
+                    />
+                  </div>
+
+                  <div className="col-md-6 mb-3">
+                    <label className="form-label">
+                      License Number
+                    </label>
+
+                    <input
+                      type="text"
+                      name="licenseNumber"
+                      className="form-control"
+                      value={formData.licenseNumber}
+                      onChange={handleChange}
+                      placeholder="Enter medical license number"
+                      required
+                    />
+                  </div>
+
+                  <div className="col-md-6 mb-3">
+                    <label className="form-label">
+                      Phone
+                    </label>
+
+                    <input
+                      type="text"
+                      name="phone"
+                      className="form-control"
+                      value={formData.phone}
+                      onChange={handleChange}
+                      placeholder="Enter phone number"
+                    />
+                  </div>
+
+                  <div className="col-md-6 mb-3">
+                    <label className="form-label">
+                      Consultation Fee
+                    </label>
+
+                    <input
+                      type="number"
+                      name="consultationFee"
+                      className="form-control"
+                      value={formData.consultationFee}
+                      onChange={handleChange}
+                      placeholder="Enter consultation fee"
+                      min="0"
+                    />
+                  </div>
+
+                </div>
+              </>
+            )}
+
+            <div className="mb-3">
+              <label className="form-label">
+                Role
+              </label>
+
+              <select
+                name="role"
+                className="form-select"
+                value={formData.role}
+                onChange={handleChange}
+              >
+                <option value="DOCTOR">
+                  Doctor
+                </option>
+
+                <option value="RECEPTIONIST">
+                  Receptionist
+                </option>
+              </select>
+            </div>
             <button
               type="submit"
               className="btn btn-primary"
