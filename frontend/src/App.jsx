@@ -27,6 +27,7 @@ import AppointmentDetails from "./pages/appointments/AppointmentDetails";
 
 import ProtectedRoute from "./components/ProtectedRoute";
 import RoleRoute from "./components/RoleRoute";
+import PublicRoute from "./components/PublicRoute";
 
 function App() {
   return (
@@ -35,36 +36,34 @@ function App() {
 
         {/* ================= PUBLIC ROUTES ================= */}
 
-        <Route
-          path="/"
-          element={<Navigate to="/login" replace />}
-        />
+        {/* Public routes */}
+        <Route element={<PublicRoute />}>
+          <Route
+            path="/login"
+            element={<Login />}
+          />
 
-        <Route
-          path="/login"
-          element={<Login />}
-        />
+          <Route
+            path="/register"
+            element={<Register />}
+          />
 
-        <Route
-          path="/register"
-          element={<Register />}
-        />
+          <Route
+            path="/verify-email/:token"
+            element={<VerifyEmail />}
+          />
+        </Route>
 
-        <Route
-          path="/verify-email/:token"
-          element={<VerifyEmail />}
-        />
-
-
-        {/* ================= AUTHENTICATED ROUTES ================= */}
-
+        {/* Protected routes */}
         <Route element={<ProtectedRoute />}>
 
-          {/* Dashboard */}
           <Route
             path="/dashboard"
             element={<Dashboard />}
           />
+
+          {/* your other protected routes */}
+
 
 
           {/* ================= PATIENT ROUTES ================= */}
