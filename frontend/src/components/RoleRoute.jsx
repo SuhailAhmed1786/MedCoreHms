@@ -1,10 +1,11 @@
 import { Navigate, Outlet } from "react-router-dom";
+import { getStoredUser } from "../utils/auth";
 
 const RoleRoute = ({ allowedRoles }) => {
   const token = localStorage.getItem("token");
-  const user = JSON.parse(localStorage.getItem("user") || "{}");
+  const user = getStoredUser();
 
-  if (!token) {
+  if (!token || !user) {
     return <Navigate to="/login" replace />;
   }
 

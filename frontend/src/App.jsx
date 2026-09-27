@@ -9,41 +9,66 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import VerifyEmail from "./pages/VerifyEmail";
 import Dashboard from "./pages/Dashboard";
+
 import Patients from "./pages/Patients";
 import AddPatient from "./pages/AddPatient";
-import StaffManagement from "./pages/StaffManagement";
-import ProtectedRoute from "./components/ProtectedRoute";
-import RoleRoute from "./components/RoleRoute";
 import PatientDetails from "./pages/PatientDetails";
 import EditPatient from "./pages/EditPatient";
+
+import StaffManagement from "./pages/StaffManagement";
+
 import Doctors from "./pages/Doctors";
 import DoctorDetails from "./pages/DoctorDetails";
 import EditDoctor from "./pages/EditDoctor";
+
+import Appointments from "./pages/appointments/Appointments";
+import BookAppointment from "./pages/appointments/BookAppointment";
+import AppointmentDetails from "./pages/appointments/AppointmentDetails";
+
+import ProtectedRoute from "./components/ProtectedRoute";
+import RoleRoute from "./components/RoleRoute";
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
 
-        {/* Public Routes */}
-        <Route path="/" element={<Navigate to="/login" />} />
+        {/* ================= PUBLIC ROUTES ================= */}
 
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
+        <Route
+          path="/"
+          element={<Navigate to="/login" replace />}
+        />
+
+        <Route
+          path="/login"
+          element={<Login />}
+        />
+
+        <Route
+          path="/register"
+          element={<Register />}
+        />
+
         <Route
           path="/verify-email/:token"
           element={<VerifyEmail />}
         />
 
-        {/* Authenticated Routes */}
+
+        {/* ================= AUTHENTICATED ROUTES ================= */}
+
         <Route element={<ProtectedRoute />}>
 
+          {/* Dashboard */}
           <Route
             path="/dashboard"
             element={<Dashboard />}
           />
 
-          {/* Patient routes */}
+
+          {/* ================= PATIENT ROUTES ================= */}
+
           <Route
             path="/patients"
             element={<Patients />}
@@ -64,15 +89,58 @@ function App() {
             element={<EditPatient />}
           />
 
+
+          {/* ================= STAFF ================= */}
+
           <Route
-            path="/staff"
-            element={<StaffManagement />}
-          />
+            element={
+              <RoleRoute allowedRoles={["ADMIN"]} />
+            }
+          >
+            <Route
+              path="/staff"
+              element={<StaffManagement />}
+            />
+          </Route>
 
 
+          {/* ================= APPOINTMENTS ================= */}
 
-          {/* Admin-only routes */}
-          <Route element={<RoleRoute allowedRoles={["ADMIN"]} />}>
+          <Route
+            element={
+              <RoleRoute
+                allowedRoles={[
+                  "ADMIN",
+                  "DOCTOR",
+                  "RECEPTIONIST",
+                ]}
+              />
+            }
+          >
+            <Route
+              path="/appointments"
+              element={<Appointments />}
+            />
+
+            <Route
+              path="/appointments/add"
+              element={<BookAppointment />}
+            />
+
+            <Route
+              path="/appointments/:id"
+              element={<AppointmentDetails />}
+            />
+          </Route>
+
+
+          {/* ================= ADMIN / DOCTORS ================= */}
+
+          <Route
+            element={
+              <RoleRoute allowedRoles={["ADMIN"]} />
+            }
+          >
 
             <Route
               path="/doctors"
@@ -89,38 +157,38 @@ function App() {
               element={<EditDoctor />}
             />
 
-          <Route
-            path="/doctors"
-            element={<div>Manage Doctors</div>}
-          />
-
-          <Route
-            path="/settings"
-            element={<div>Admin Settings</div>}
-          />
-
-
-        </Route>
-
-        {/* Admin + Receptionist */}
-        <Route
-          element={
-            <RoleRoute
-              allowedRoles={["ADMIN", "RECEPTIONIST"]}
+            <Route
+              path="/settings"
+              element={<div>Admin Settings</div>}
             />
-          }
-        >
+
+          </Route>
+
+
+          {/* ================= BILLING ================= */}
+
           <Route
-            path="/billing"
-            element={<div>Billing</div>}
-          />
+            element={
+              <RoleRoute
+                allowedRoles={[
+                  "ADMIN",
+                  "RECEPTIONIST",
+                ]}
+              />
+            }
+          >
+            <Route
+              path="/billing"
+              element={<div>Billing</div>}
+            />
+          </Route>
+
         </Route>
 
-      </Route>
-
-    </Routes>
-    </BrowserRouter >
+      </Routes>
+    </BrowserRouter>
   );
 }
 
 export default App;
+

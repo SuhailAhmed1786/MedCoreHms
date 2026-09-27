@@ -1,37 +1,75 @@
-// const express = require("express");
+const express = require("express");
 
-// const {
-//   createAppointment,
-// //   getAppointments,
-// //   getAppointmentById,
-// //   updateAppointment,
-// //   cancelAppointment,
-// //   deleteAppointment,
-// } = require("../controllers/appointmentController");
+const {
+  createAppointment,
+  getAppointments,
+  getAppointmentById,
+  updateAppointment,
+  updateAppointmentStatus,
+  deleteAppointment
+} = require("../controllers/appointmentController");
 
-// const authMiddleware = require("../middleware/authMiddleware");
+const authMiddleware = require("../middleware/authMiddleware");
+const authorizeRoles = require("../middleware/authorizeRoles");
 
-// const router = express.Router();
+const router = express.Router();
 
-// // All appointment routes require authentication
-// router.use(authMiddleware);
+router.use(authMiddleware);
 
-// // Create appointment
-// router.post("/", createAppointment);
+router.post(
+  "/",
+  authorizeRoles(
+    "ADMIN",
+    "DOCTOR",
+    "RECEPTIONIST"
+  ),
+  createAppointment
+);
 
-// // Get appointments
-// // router.get("/", getAppointments);
+router.get(
+  "/",
+  authorizeRoles(
+    "ADMIN",
+    "DOCTOR",
+    "RECEPTIONIST"
+  ),
+  getAppointments
+);
 
-// // // Get single appointment
-// // router.get("/:id", getAppointmentById);
+router.get(
+  "/:id",
+  authorizeRoles(
+    "ADMIN",
+    "DOCTOR",
+    "RECEPTIONIST"
+  ),
+  getAppointmentById
+);
 
-// // // Update appointment
-// // router.put("/:id", updateAppointment);
+router.put(
+  "/:id",
+  authorizeRoles(
+    "ADMIN",
+    "DOCTOR",
+    "RECEPTIONIST"
+  ),
+  updateAppointment
+);
 
-// // // Cancel appointment
-// // router.patch("/:id/cancel", cancelAppointment);
+router.patch(
+  "/:id/status",
+  authorizeRoles(
+    "ADMIN",
+    "DOCTOR",
+    "RECEPTIONIST"
+  ),
+  updateAppointmentStatus
+);
 
-// // // Delete appointment
-// // router.delete("/:id", deleteAppointment);
+router.delete(
+  "/:id",
+  authorizeRoles("ADMIN"),
+  deleteAppointment
+);
 
-// module.exports = router;
+module.exports = router;

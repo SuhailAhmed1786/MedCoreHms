@@ -125,10 +125,7 @@ const updateDoctorAvailability = async (req, res, next) => {
       });
     }
 
-    const doctor = await Doctor.findById(id).populate(
-      "user",
-      "username email role"
-    );
+    const doctor = await Doctor.findById(id).populate("user","username email role");
 
       if (!doctor) {
           return res.status(404).json({
