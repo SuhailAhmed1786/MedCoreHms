@@ -129,14 +129,14 @@ const createEMR = async (req, res) => {
         path: "patient",
         populate: {
           path: "user",
-          select: "username email",
+          select: "name username email",
         },
       })
       .populate({
         path: "doctor",
         populate: {
           path: "user",
-          select: "username email",
+          select: "name username email",
         },
       })
       .populate("appointment");
@@ -175,14 +175,14 @@ const getEMRById = async (req, res) => {
         path: "patient",
         populate: {
           path: "user",
-          select: "username email",
+          select: "name username email",
         },
       })
       .populate({
         path: "doctor",
         populate: {
           path: "user",
-          select: "username email",
+          select: "name username email",
         },
       })
       .populate("appointment");
@@ -215,54 +215,36 @@ const getPatientEMRs = async (req, res) => {
   try {
     const { patientId } = req.params;
 
-    if (!mongoose.Types.ObjectId.isValid(patientId)) {
-      return res.status(400).json({
-        success: false,
-        message: "Invalid patient ID",
-      });
-    }
-
-    const patient = await Patient.findById(patientId);
-
-    if (!patient) {
-      return res.status(404).json({
-        success: false,
-        message: "Patient not found",
-      });
-    }
-
     const emrs = await EMR.find({
       patient: patientId,
     })
-      .sort({ createdAt: -1 })
       .populate({
         path: "patient",
         populate: {
           path: "user",
-          select: "username email",
+          select: "name username email",
         },
       })
       .populate({
         path: "doctor",
         populate: {
           path: "user",
-          select: "username email",
+          select: "nameusername email",
         },
       })
-      .populate("appointment");
+      .populate("appointment")
+      .sort({ createdAt: -1 });
 
-    return res.status(200).json({
+    res.status(200).json({
       success: true,
-      count: emrs.length,
       data: emrs,
     });
   } catch (error) {
-    console.error("Get Patient EMRs Error:", error);
+    console.error("Get patient EMRs error:", error);
 
-    return res.status(500).json({
+    res.status(500).json({
       success: false,
-      message: "Failed to get patient EMRs",
-      error: error.message,
+      message: error.message,
     });
   }
 };
@@ -314,14 +296,14 @@ const updateEMR = async (req, res) => {
         path: "patient",
         populate: {
           path: "user",
-          select: "username email",
+          select: "name username email",
         },
       })
       .populate({
         path: "doctor",
         populate: {
           path: "user",
-          select: "username email",
+          select: "nameusername email",
         },
       })
       .populate("appointment");
@@ -333,7 +315,6 @@ const updateEMR = async (req, res) => {
     });
   } catch (error) {
     console.error("Update EMR Error:", error);
-
     return res.status(500).json({
       success: false,
       message: "Failed to update EMR",

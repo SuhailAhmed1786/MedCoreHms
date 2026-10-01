@@ -11,11 +11,28 @@ const createPatient = async (req, res, next) => {
       emergencyContact,
     } = req.body;
 
-    console.log("Authenticated user:", req.user);
-    console.log("User ID:", req.user?.userId);
+    const userId = req.user?.userId;
+
+    if (!userId) {
+      return res.status(401).json({
+        success: false,
+        message: "Unauthorized user",
+      });
+    }
+
+    const existingPatient = await Patient.findOne({
+      user: userId,
+    });
+
+    if (existingPatient) {
+      return res.status(409).json({
+        success: false,
+        message: "Patient already exists for this user",
+      });
+    }
 
     const patient = await Patient.create({
-      user: req.user.userId,
+      user: userId,
       dateOfBirth,
       gender,
       phone,
@@ -36,38 +53,38 @@ const createPatient = async (req, res, next) => {
 
 
 const getPatients = async (req, res, next) => {
-  const patient = await Patient.find(req.body)
-  console.log("getpatients", patient)
-
   try {
-    if (!patient) {
+    const patients = await Patient.find()
+      .populate({
+        path: "user",
+        select: "name username email",
+      });
+
+    if (patients.length === 0) {
       return res.status(404).json({
-        success: true,
-        // data: patient,
-        message: "Patient not found",
-      })
-    }
-
-    else {
-      return res.status(200).json({
-        data: patient,
         success: false,
-        message: "Get All data successfully",
-
-      })
+        message: "No patients found",
+        data: [],
+      });
     }
 
+    return res.status(200).json({
+      success: true,
+      message: "Patients fetched successfully",
+      data: patients,
+    });
   } catch (error) {
     next(error);
-
   }
-}
-
+};
 
 const getPatientById = async (req, res, next) => {
   try {
-
-    const patient = await Patient.findById(req.params.id);
+    const patient = await Patient.findById(req.params.id)
+      .populate({
+        path: "user",
+        select: "name username email",
+      });
 
     if (!patient) {
       return res.status(404).json({
@@ -76,18 +93,15 @@ const getPatientById = async (req, res, next) => {
       });
     }
 
-    else {
-      return res.status(200).json({
-        success: true,
-        message: "Patient found successfully",
-        data: patient,
-      });
-    }
-
+    return res.status(200).json({
+      success: true,
+      message: "Patient found successfully",
+      data: patient,
+    });
   } catch (error) {
     next(error);
   }
-}
+};
 
 
 const deletePatient = async (req, res, next) => {
@@ -114,14 +128,23 @@ const deletePatient = async (req, res, next) => {
 }
 
 
-const updatePatient = async (req, res, next) => { 
-
-  const { id } = req.params;
-
+const updatePatient = async (req, res, next) => {
   try {
-    const updatedPatient = await Patient.findByIdAndUpdate(id, req.body, { new: true });
+    const { id } = req.params;
 
-    if (!updatedPatient) {  
+    const updatedPatient = await Patient.findByIdAndUpdate(
+      id,
+      req.body,
+      {
+        new: true,
+        runValidators: true,
+      }
+    ).populate({
+      path: "user",
+      select: "name username email",
+    });
+
+    if (!updatedPatient) {
       return res.status(404).json({
         success: false,
         message: "Patient not found",
@@ -133,12 +156,10 @@ const updatePatient = async (req, res, next) => {
       message: "Patient updated successfully",
       data: updatedPatient,
     });
-  }
-
-  catch (error) {
+  } catch (error) {
     next(error);
   }
-}
+};
 
 
 module.exports = {

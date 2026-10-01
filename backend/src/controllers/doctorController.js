@@ -2,96 +2,93 @@ const User = require("../models/User");
 const Doctor = require("../models/Doctor");
 
 const getDoctorList = async (req, res, next) => {
-    const doctorlist =  await Doctor.find(req.body)
-    try {
-        if (!doctorlist) {
-            return res.status(404).json({
-                success: false,
-                message: "doctor not found"
-            })
-        }
+  try {
+    const doctorlist = await Doctor.find()
+      .populate("user", "name username email role");
 
-        return res.status(200).json({
-            success: true,
-            message: "doctor found successfully",
-            data: doctorlist
-        })
-
-    } catch (error) {
-        next(error)
-    }
-}
+    return res.status(200).json({
+      success: true,
+      message: "Doctors found successfully",
+      data: doctorlist,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
 
 
 const getDoctorById = async (req, res, next) => {
+  try {
+    const doctor = await Doctor.findById(req.params.id)
+      .populate("user", "name username email role");
 
-    const doctors = await Doctor.findById(req.params.id)
-
-    try {
-        if (!doctors) {
-            return res.status(404).json({
-                success: false,
-                message: "doctor not found"
-            })
-        } else {
-            return res.status(200).json({
-                success: true,
-                message: "doctor found successfully",
-                data: doctors
-            })
-
-        }
-
-    } catch (error) {
-        next(error)
+    if (!doctor) {
+      return res.status(404).json({
+        success: false,
+        message: "Doctor not found",
+      });
     }
-}
 
+    return res.status(200).json({
+      success: true,
+      message: "Doctor found successfully",
+      data: doctor,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
 
 const getDoctorByUserId = async (req, res, next) => {
-    const doctors = await Doctor.findOne({ user: req.params.userId })
+  try {
+    const doctor = await Doctor.findOne({
+      user: req.params.userId,
+    }).populate("user", "name username email role");
 
-    try {
-        if (!doctors) {
-            return res.status(404).json({
-                success: false,
-                message: "doctor not found"
-            })
-        } else {
-            return res.status(200).json({
-                success: true,
-                message: "doctor found successfully",
-                data: doctors
-            })
-        }
-    } catch (error) {
-        next(error)
+    if (!doctor) {
+      return res.status(404).json({
+        success: false,
+        message: "Doctor not found",
+      });
     }
-}
+
+    return res.status(200).json({
+      success: true,
+      message: "Doctor found successfully",
+      data: doctor,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
 
 const updateDoctor = async (req, res, next) => {
-    const { specialization, qualification, licenseNumber, phone, consultationFee } = req.body;
+  try {
+    const doctor = await Doctor.findByIdAndUpdate(
+      req.params.id,
+      req.body,
+      {
+        new: true,
+        runValidators: true,
+      }
+    ).populate("user", "name username email role");
 
-    const doctors = await Doctor.findByIdAndUpdate(req.params.id, req.body, { new: true })
-
-    try {
-        if (!doctors) {
-            return res.status(404).json({
-                success: false,
-                message: "doctor not found"
-            })
-        } else {
-            return res.status(200).json({
-                success: true,
-                message: "doctor updated successfully",
-                data: doctors
-            })
-        }
-    } catch (error) {
-        next(error)
+    if (!doctor) {
+      return res.status(404).json({
+        success: false,
+        message: "Doctor not found",
+      });
     }
-}
 
+    return res.status(200).json({
+      success: true,
+      message: "Doctor updated successfully",
+      data: doctor,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
 
 const deleteDoctor = async (req, res, next) => {
     try {

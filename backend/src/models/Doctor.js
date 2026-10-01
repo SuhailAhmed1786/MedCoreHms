@@ -9,34 +9,15 @@ const doctorSchema = new mongoose.Schema(
       unique: true,
     },
 
-    specialization: {
-      type: String,
-      required: true,
-      trim: true,
-    },
+    specialization: String,
 
-    qualification: {
-      type: String,
-      required: true,
-      trim: true,
-    },
+    qualification: String,
 
-    licenseNumber: {
-      type: String,
-      required: true,
-      unique: true,
-      trim: true,
-    },
+    licenseNumber: String,
 
-    phone: {
-      type: String,
-      trim: true,
-    },
+    phone: String,
 
-    consultationFee: {
-      type: Number,
-      min: 0,
-    },
+    consultationFee: Number,
 
     available: {
       type: Boolean,

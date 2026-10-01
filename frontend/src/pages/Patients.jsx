@@ -284,7 +284,7 @@ const Patients = () => {
 
                 {filteredPatients.map(
                   (patient, index) => {
-
+                    console.log('patient', patient.user);
                     const username =
                       patient.user?.username ||
                       patient.username ||
