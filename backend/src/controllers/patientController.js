@@ -37,6 +37,7 @@ const createPatient = async (req, res, next) => {
 
 const getPatients = async (req, res, next) => {
   const patient = await Patient.find(req.body)
+  console.log("getpatients", patient)
 
   try {
     if (!patient) {

@@ -1,8 +1,7 @@
 import {
   BrowserRouter,
   Routes,
-  Route,
-  Navigate,
+  Route
 } from "react-router-dom";
 
 import Login from "./pages/Login";
@@ -28,6 +27,11 @@ import AppointmentDetails from "./pages/appointments/AppointmentDetails";
 import ProtectedRoute from "./components/ProtectedRoute";
 import RoleRoute from "./components/RoleRoute";
 import PublicRoute from "./components/PublicRoute";
+
+import EMRList from "./pages/emr/EMRList";
+import AddEMR from "./pages/emr/AddEMR";
+import EMRDetails from "./pages/emr/EMRDetails";
+import EditEMR from "./pages/emr/EditEMR";
 
 function App() {
   return (
@@ -100,6 +104,18 @@ function App() {
               path="/staff"
               element={<StaffManagement />}
             />
+          </Route>
+          <Route
+            element={
+              <RoleRoute
+                allowedRoles={["ADMIN", "DOCTOR"]}
+              />
+            }
+          >
+            <Route path="/emr" element={<EMRList />} />
+            <Route path="/emr/add" element={<AddEMR />} />
+            <Route path="/emr/:id" element={<EMRDetails />} />
+            <Route path="/emr/:id/edit" element={<EditEMR />} />
           </Route>
 
 
