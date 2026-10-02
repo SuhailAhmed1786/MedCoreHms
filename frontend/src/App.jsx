@@ -15,7 +15,6 @@ import PatientDetails from "./pages/PatientDetails";
 import EditPatient from "./pages/EditPatient";
 
 import StaffManagement from "./pages/StaffManagement";
-
 import Doctors from "./pages/Doctors";
 import DoctorDetails from "./pages/DoctorDetails";
 import EditDoctor from "./pages/EditDoctor";
@@ -32,25 +31,23 @@ import EMRList from "./pages/emr/EMRList";
 import AddEMR from "./pages/emr/AddEMR";
 import EMRDetails from "./pages/emr/EMRDetails";
 import EditEMR from "./pages/emr/EditEMR";
+import Billing from "./pages/billing/Billing";
+import AddBilling from './pages/billing/AddBilling';
+import BillingDetails from "./pages/billing/BillingDetails";
+import EditBilling from "./pages/billing/EditBilling";
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
+        {/* =====================================================
+            PUBLIC ROUTES
+        ===================================================== */}
 
-        {/* ================= PUBLIC ROUTES ================= */}
-
-        {/* Public routes */}
         <Route element={<PublicRoute />}>
-          <Route
-            path="/login"
-            element={<Login />}
-          />
+          <Route path="/login" element={<Login />} />
 
-          <Route
-            path="/register"
-            element={<Register />}
-          />
+          <Route path="/register" element={<Register />} />
 
           <Route
             path="/verify-email/:token"
@@ -58,19 +55,22 @@ function App() {
           />
         </Route>
 
-        {/* Protected routes */}
+
+        {/* =====================================================
+            ALL PROTECTED ROUTES
+        ===================================================== */}
+
         <Route element={<ProtectedRoute />}>
+
+          {/* ================= DASHBOARD ================= */}
 
           <Route
             path="/dashboard"
             element={<Dashboard />}
           />
 
-          {/* your other protected routes */}
 
-
-
-          {/* ================= PATIENT ROUTES ================= */}
+          {/* ================= PATIENTS ================= */}
 
           <Route
             path="/patients"
@@ -95,16 +95,18 @@ function App() {
 
           {/* ================= STAFF ================= */}
 
-          <Route
-            element={
-              <RoleRoute allowedRoles={["ADMIN"]} />
-            }
-          >
+          <Route element={<RoleRoute allowedRoles={["ADMIN"]} />}>
+
             <Route
               path="/staff"
               element={<StaffManagement />}
             />
+
           </Route>
+
+
+          {/* ================= EMR ================= */}
+
           <Route
             element={
               <RoleRoute
@@ -112,10 +114,27 @@ function App() {
               />
             }
           >
-            <Route path="/emr" element={<EMRList />} />
-            <Route path="/emr/add" element={<AddEMR />} />
-            <Route path="/emr/:id" element={<EMRDetails />} />
-            <Route path="/emr/:id/edit" element={<EditEMR />} />
+
+            <Route
+              path="/emr"
+              element={<EMRList />}
+            />
+
+            <Route
+              path="/emr/add"
+              element={<AddEMR />}
+            />
+
+            <Route
+              path="/emr/:id"
+              element={<EMRDetails />}
+            />
+
+            <Route
+              path="/emr/:id/edit"
+              element={<EditEMR />}
+            />
+
           </Route>
 
 
@@ -132,6 +151,7 @@ function App() {
               />
             }
           >
+
             <Route
               path="/appointments"
               element={<Appointments />}
@@ -146,10 +166,11 @@ function App() {
               path="/appointments/:id"
               element={<AppointmentDetails />}
             />
+
           </Route>
 
 
-          {/* ================= ADMIN / DOCTORS ================= */}
+          {/* ================= DOCTORS ================= */}
 
           <Route
             element={
@@ -185,17 +206,31 @@ function App() {
           <Route
             element={
               <RoleRoute
-                allowedRoles={[
-                  "ADMIN",
-                  "RECEPTIONIST",
-                ]}
+                allowedRoles={["ADMIN", "RECEPTIONIST"]}
               />
             }
           >
+
             <Route
               path="/billing"
-              element={<div>Billing</div>}
+              element={<Billing />}
             />
+
+            <Route
+              path="/billing/add"
+              element={<AddBilling />}
+            />
+
+            <Route
+              path="/billing/:id"
+              element={<BillingDetails />}
+            />
+
+            <Route
+              path="/billing/:id/edit"
+              element={<EditBilling />}
+            />
+
           </Route>
 
         </Route>

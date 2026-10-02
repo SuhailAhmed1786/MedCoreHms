@@ -96,7 +96,7 @@ const EMRList = () => {
 
             {patients.map((patient) => (
               <option key={patient._id} value={patient._id}>
-                {patient.emergencyContact?.name || "Unknown Patient"}
+                {patient.user?.username || "Unknown Patient"}
               </option>
             ))}
           </select>

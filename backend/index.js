@@ -10,6 +10,7 @@ const userRoutes = require("./src/routes/userRoutes");
 const appointmentRoutes = require("./src/routes/appointmentRoutes");
 const doctorRoutes = require("./src/routes/doctorRoutes");
 const emrRoutes = require("./src/routes/emrRoutes");
+const billingRoutes = require("./src/routes/billingRoutes");
 const app = express();
 app.use(express.json());
 app.use(helmet());
@@ -27,7 +28,7 @@ app.use("/api/patients", patientRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/doctors", doctorRoutes);
 app.use("/api/emr", emrRoutes);
-
+app.use("/api/billing", billingRoutes);
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 app.get("/", (req, res) => {

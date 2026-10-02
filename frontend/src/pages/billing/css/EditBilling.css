@@ -1,0 +1,239 @@
+/* ================================
+   EDIT BILLING PAGE
+================================ */
+
+.edit-billing-page {
+  padding: 24px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* ================================
+   HEADER
+================================ */
+
+.edit-billing-header {
+  margin-bottom: 24px;
+}
+
+.edit-billing-header h1 {
+  margin: 0;
+  font-size: 28px;
+}
+
+.edit-billing-header p {
+  margin: 6px 0 0;
+  color: #666;
+  font-size: 14px;
+}
+
+/* ================================
+   FORM CARD
+================================ */
+
+.edit-billing-card {
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  padding: 24px;
+  margin-bottom: 20px;
+}
+
+.edit-billing-card h2 {
+  margin: 0 0 20px;
+  font-size: 20px;
+}
+
+/* ================================
+   BILLING ITEMS
+================================ */
+
+.edit-billing-items {
+  margin-bottom: 25px;
+}
+
+.edit-billing-item {
+  display: grid;
+  grid-template-columns: 2fr 100px 150px 45px;
+  gap: 12px;
+  align-items: end;
+  margin-bottom: 12px;
+}
+
+.edit-billing-item input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 10px 11px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  outline: none;
+}
+
+.edit-billing-item input:focus {
+  border-color: #2563eb;
+}
+
+.edit-remove-item {
+  height: 40px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  background: #ffe0e0;
+  color: #c62828;
+  font-size: 18px;
+}
+
+.edit-add-item {
+  border: none;
+  padding: 9px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+/* ================================
+   FORM
+================================ */
+
+.edit-billing-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 18px;
+}
+
+.edit-billing-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.edit-billing-group label {
+  margin-bottom: 7px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.edit-billing-group input,
+.edit-billing-group select,
+.edit-billing-group textarea {
+  padding: 11px 12px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 14px;
+  outline: none;
+}
+
+.edit-billing-group input:focus,
+.edit-billing-group select:focus,
+.edit-billing-group textarea:focus {
+  border-color: #2563eb;
+}
+
+.edit-billing-group textarea {
+  min-height: 100px;
+  resize: vertical;
+}
+
+.edit-billing-group.full-width {
+  grid-column: 1 / -1;
+}
+
+/* ================================
+   SUMMARY
+================================ */
+
+.edit-billing-summary {
+  width: 360px;
+  margin-left: auto;
+  padding: 18px;
+  border-radius: 8px;
+  background: #f8f9fa;
+  border: 1px solid #ddd;
+}
+
+.edit-summary-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 12px;
+  font-size: 14px;
+}
+
+.edit-summary-row.total {
+  border-top: 1px solid #ddd;
+  padding-top: 14px;
+  margin-top: 14px;
+  font-size: 19px;
+  font-weight: 700;
+}
+
+/* ================================
+   ACTIONS
+================================ */
+
+.edit-billing-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 24px;
+}
+
+.edit-cancel-btn,
+.edit-save-btn {
+  border: none;
+  padding: 11px 20px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.edit-cancel-btn {
+  background: #eee;
+}
+
+.edit-save-btn {
+  background: #2563eb;
+  color: white;
+}
+
+.edit-save-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* ================================
+   ERROR
+================================ */
+
+.edit-billing-error {
+  padding: 12px 15px;
+  margin-bottom: 20px;
+  border-radius: 6px;
+  background: #ffe1e1;
+  color: #b42318;
+  border: 1px solid #ffbaba;
+}
+
+/* ================================
+   RESPONSIVE
+================================ */
+
+@media (max-width: 768px) {
+  .edit-billing-page {
+    padding: 15px;
+  }
+
+  .edit-billing-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .edit-billing-group.full-width {
+    grid-column: auto;
+  }
+
+  .edit-billing-item {
+    grid-template-columns: 1fr;
+  }
+
+  .edit-billing-summary {
+    width: auto;
+    margin-top: 20px;
+  }
+}

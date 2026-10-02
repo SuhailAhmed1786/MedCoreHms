@@ -1,0 +1,105 @@
+.billing-page {
+  padding: 24px;
+}
+
+.billing-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.billing-header h1 {
+  margin: 0;
+  font-size: 28px;
+}
+
+.billing-header p {
+  margin-top: 6px;
+  color: #666;
+}
+
+.add-billing-btn {
+  border: none;
+  padding: 11px 18px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.billing-table-container {
+  width: 100%;
+  overflow-x: auto;
+  background: white;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+}
+
+.billing-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.billing-table th,
+.billing-table td {
+  padding: 14px 16px;
+  text-align: left;
+  border-bottom: 1px solid #eee;
+  white-space: nowrap;
+}
+
+.billing-table th {
+  font-size: 14px;
+}
+
+.billing-table td {
+  font-size: 14px;
+}
+
+.status {
+  display: inline-block;
+  padding: 5px 10px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.status.paid {
+  background: #dff5e3;
+}
+
+.status.partial {
+  background: #fff1c7;
+}
+
+.status.pending {
+  background: #e8e8e8;
+}
+
+.status.cancelled {
+  background: #ffdede;
+}
+
+.view-btn {
+  border: none;
+  padding: 7px 12px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.error-message {
+  padding: 12px;
+  margin-bottom: 15px;
+  border-radius: 6px;
+  background: #ffe1e1;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 50px 20px;
+}
+
+.page-loading {
+  padding: 40px;
+  text-align: center;
+}
