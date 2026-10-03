@@ -11,6 +11,7 @@ const appointmentRoutes = require("./src/routes/appointmentRoutes");
 const doctorRoutes = require("./src/routes/doctorRoutes");
 const emrRoutes = require("./src/routes/emrRoutes");
 const billingRoutes = require("./src/routes/billingRoutes");
+const dashboardRoutes = require("./src/routes/dashboardRoutes");
 const app = express();
 app.use(express.json());
 app.use(helmet());
@@ -29,6 +30,7 @@ app.use("/api/users", userRoutes);
 app.use("/api/doctors", doctorRoutes);
 app.use("/api/emr", emrRoutes);
 app.use("/api/billing", billingRoutes);
+app.use("/api/dashboard", dashboardRoutes);
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 app.get("/", (req, res) => {

@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import api from "../../services/api";
 import "./css/BillingDetails.css";
+
 const BillingDetails = () => {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -16,6 +17,7 @@ const BillingDetails = () => {
 
   const [paymentLoading, setPaymentLoading] = useState(false);
   const [cancelLoading, setCancelLoading] = useState(false);
+  const [showPaymentModal, setShowPaymentModal] = useState(true);
 
   // --------------------------------
   // Get billing details
@@ -36,7 +38,7 @@ const BillingDetails = () => {
 
       setError(
         error.response?.data?.message ||
-          "Failed to fetch billing details"
+        "Failed to fetch billing details"
       );
     } finally {
       setLoading(false);
@@ -104,49 +106,24 @@ const BillingDetails = () => {
 
     const amount = Number(paymentAmount);
 
+    if (remainingAmount <= 0) {
+      setError("No remaining amount to pay.");
+      return;
+    }
+
     if (!amount || amount <= 0) {
-      setError("Please enter a valid payment amount");
+      setError("Please enter a valid payment amount.");
       return;
     }
 
     if (amount > remainingAmount) {
       setError(
-        `Payment cannot be greater than remaining amount ₹${remainingAmount}`
+        `Payment cannot be greater than remaining amount ₹${remainingAmount.toFixed(2)}`
       );
       return;
     }
 
-    try {
-      setPaymentLoading(true);
-
-      const response = await api.patch(
-        `/billing/${id}/payment`,
-        {
-          amount,
-          paymentMethod: paymentMethod || undefined,
-          notes: paymentNotes,
-        }
-      );
-
-      if (response.data.success) {
-        alert("Payment recorded successfully");
-
-        setPaymentAmount("");
-        setPaymentMethod("");
-        setPaymentNotes("");
-
-        setBilling(response.data.data);
-      }
-    } catch (error) {
-      console.error("Record Payment Error:", error);
-
-      setError(
-        error.response?.data?.message ||
-          "Failed to record payment"
-      );
-    } finally {
-      setPaymentLoading(false);
-    }
+    // continue with your API call...
   };
 
   // --------------------------------
@@ -180,7 +157,7 @@ const BillingDetails = () => {
 
       setError(
         error.response?.data?.message ||
-          "Failed to cancel billing"
+        "Failed to cancel billing"
       );
     } finally {
       setCancelLoading(false);
@@ -485,48 +462,40 @@ const BillingDetails = () => {
       {/* Payment */}
 
       {billing.paymentStatus !== "PAID" &&
-        billing.paymentStatus !== "CANCELLED" && (
+        billing.paymentStatus !== "CANCELLED" &&
+        remainingAmount > 0 && (
           <div className="details-card">
-
             <h2>Record Payment</h2>
 
             <form onSubmit={handlePayment}>
-
               <div className="form-group">
-
-                <label>
-                  Payment Amount
-                </label>
+                <label>Payment Amount</label>
 
                 <input
                   type="number"
-                  min="1"
+                  min="0.01"
                   max={remainingAmount}
+                  step="0.01"
                   value={paymentAmount}
-                  onChange={(e) =>
-                    setPaymentAmount(
-                      e.target.value
-                    )
-                  }
-                  placeholder={`Remaining ₹${remainingAmount}`}
+                  onChange={(e) => {
+                    setPaymentAmount(e.target.value);
+                    setError("");
+                  }}
+                  placeholder={`Remaining ₹${remainingAmount.toFixed(2)}`}
                   required
                 />
-
               </div>
 
               <div className="form-group">
-
-                <label>
-                  Payment Method
-                </label>
+                <label>Payment Method</label>
 
                 <select
                   value={paymentMethod}
-                  onChange={(e) =>
-                    setPaymentMethod(
-                      e.target.value
-                    )
-                  }
+                  onChange={(e) => {
+                    setPaymentMethod(e.target.value);
+                    setError("");
+                  }}
+                  required
                 >
                   <option value="">
                     Select Payment Method
@@ -548,27 +517,26 @@ const BillingDetails = () => {
                     Online
                   </option>
                 </select>
-
               </div>
 
               <div className="form-group">
-
-                <label>
-                  Notes
-                </label>
+                <label>Notes</label>
 
                 <textarea
                   rows="3"
                   value={paymentNotes}
                   onChange={(e) =>
-                    setPaymentNotes(
-                      e.target.value
-                    )
+                    setPaymentNotes(e.target.value)
                   }
                   placeholder="Payment notes..."
                 />
-
               </div>
+
+              {error && (
+                <div className="error-message">
+                  {error}
+                </div>
+              )}
 
               <button
                 type="submit"
@@ -578,45 +546,42 @@ const BillingDetails = () => {
                   ? "Processing..."
                   : "Record Payment"}
               </button>
-
             </form>
-
           </div>
         )}
 
+
       {/* Payment Information */}
 
-      <div className="details-card">
+      {/* Payment */}
 
-        <h2>Payment Information</h2>
+      {billing.paymentStatus !== "PAID" &&
+        billing.paymentStatus !== "CANCELLED" && (
+          <div className="details-card payment-action-card">
 
-        <p>
-          <strong>Payment Method:</strong>{" "}
-          {billing.paymentMethod || "N/A"}
-        </p>
+            <div className="payment-action-content">
+              <div>
+                <h2>Payment</h2>
 
-        <p>
-          <strong>Payment Date:</strong>{" "}
-          {formatDateTime(
-            billing.paymentDate
-          )}
-        </p>
+                <p>
+                  Remaining Amount:{" "}
+                  <strong>
+                    ₹{Math.max(0, remainingAmount).toFixed(2)}
+                  </strong>
+                </p>
+              </div>
 
-        <p>
-          <strong>Created:</strong>{" "}
-          {formatDateTime(
-            billing.createdAt
-          )}
-        </p>
+              <button
+                type="button"
+                className="record-payment-btn"
+                onClick={() => setShowPaymentModal(true)}
+              >
+                Record Payment
+              </button>
+            </div>
 
-        {billing.notes && (
-          <p>
-            <strong>Notes:</strong>{" "}
-            {billing.notes}
-          </p>
+          </div>
         )}
-
-      </div>
 
       {/* Actions */}
 
@@ -644,18 +609,218 @@ const BillingDetails = () => {
           Back to Billing
         </button>
 
-              {billing.paymentStatus !== "CANCELLED" && (
-                  <button
-                      type="button"
-                      onClick={() =>
-                          navigate(`/billing/${billing._id}/edit`)
-                      }
-                  >
-                      Edit Bill
-                  </button>
-              )}
+        {billing.paymentStatus !== "CANCELLED" && (
+          <button
+            type="button"
+            onClick={() =>
+              navigate(`/billing/${billing._id}/edit`)
+            }
+          >
+            Edit Bill
+          </button>
+        )}
 
       </div>
+
+      {showPaymentModal && (
+        <div
+          className="payment-modal-overlay"
+          onClick={() => {
+            if (!paymentLoading) {
+              setShowPaymentModal(false);
+            }
+          }}
+        >
+          <div
+            className="payment-modal"
+            onClick={(e) => e.stopPropagation()}
+          >
+
+            {/* Modal Header */}
+
+            <div className="payment-modal-header">
+
+              <div>
+                <h2>Record Payment</h2>
+
+                <p>
+                  Record a payment for this invoice.
+                </p>
+              </div>
+
+              <button
+                type="button"
+                className="payment-modal-close"
+                onClick={() => setShowPaymentModal(false)}
+                disabled={paymentLoading}
+              >
+                ×
+              </button>
+
+            </div>
+
+
+            {/* Payment Summary */}
+
+            <div className="payment-modal-summary">
+
+              <div>
+                <span>Total Amount</span>
+
+                <strong>
+                  ₹{Number(billing.totalAmount).toFixed(2)}
+                </strong>
+              </div>
+
+              <div>
+                <span>Paid Amount</span>
+
+                <strong>
+                  ₹{Number(billing.paidAmount).toFixed(2)}
+                </strong>
+              </div>
+
+              <div className="remaining">
+                <span>Remaining</span>
+
+                <strong>
+                  ₹{Math.max(0, remainingAmount).toFixed(2)}
+                </strong>
+              </div>
+
+            </div>
+
+
+            {/* Error */}
+
+            {error && (
+              <div className="payment-modal-error">
+                {error}
+              </div>
+            )}
+
+
+            {/* Payment Form */}
+
+            <form onSubmit={handlePayment}>
+
+              {/* Amount */}
+
+              <div className="form-group">
+
+                <label>
+                  Payment Amount
+                </label>
+
+                <input
+                  type="number"
+                  min="1"
+                  max={remainingAmount}
+                  step="0.01"
+                  value={paymentAmount}
+                  onChange={(e) => {
+                    setPaymentAmount(e.target.value);
+                    setError("");
+                  }}
+                  placeholder={`Remaining ₹${remainingAmount.toFixed(2)}`}
+                  required
+                  disabled={paymentLoading}
+                />
+
+              </div>
+
+
+              {/* Payment Method */}
+
+              <div className="form-group">
+
+                <label>
+                  Payment Method
+                </label>
+
+                <select
+                  value={paymentMethod}
+                  onChange={(e) => {
+                    setPaymentMethod(e.target.value);
+                    setError("");
+                  }}
+                  disabled={paymentLoading}
+                >
+
+                  <option value="">
+                    Select Payment Method
+                  </option>
+
+                  <option value="CASH">
+                    Cash
+                  </option>
+
+                  <option value="CARD">
+                    Card
+                  </option>
+
+                  <option value="UPI">
+                    UPI
+                  </option>
+
+                  <option value="ONLINE">
+                    Online
+                  </option>
+
+                </select>
+
+              </div>
+
+
+              {/* Notes */}
+
+              <div className="form-group">
+
+                <label>
+                  Notes
+                </label>
+
+                <textarea
+                  rows="3"
+                  value={paymentNotes}
+                  onChange={(e) => setPaymentNotes(e.target.value)}
+                  placeholder="Payment notes..."
+                  disabled={paymentLoading}
+                />
+
+              </div>
+
+
+              {/* Modal Actions */}
+
+              <div className="payment-modal-actions">
+
+                <button
+                  type="button"
+                  className="payment-modal-cancel"
+                  onClick={() => setShowPaymentModal(false)}
+                  disabled={paymentLoading}
+                >
+                  Cancel
+                </button>
+
+                <button
+                  type="submit"
+                  className="payment-modal-submit"
+                  disabled={paymentLoading}
+                >
+                  {paymentLoading
+                    ? "Processing..."
+                    : "Record Payment"}
+                </button>
+
+              </div>
+
+            </form>
+
+          </div>
+        </div>
+      )}
 
     </div>
   );

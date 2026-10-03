@@ -14,12 +14,47 @@ import {
   FaUsers
 } from "react-icons/fa";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import api from "../services//api";
+
+
 
 const Dashboard = () => {
   const navigate = useNavigate();
   const [sidebarOpen, setSidebarOpen] = useState(false);
+
+  const [dashboardData, setDashboardData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+  const appointments = dashboardData?.todaysAppointments || [];
+  const patients = dashboardData?.recentPatients || [];
+  useEffect(() => {
+    const fetchDashboard = async () => {
+      try {
+        setLoading(true);
+
+        const response = await api.get("/dashboard");
+
+        if (response.data.success) {
+          setDashboardData(response.data.data);
+
+          // const appointments = dashboardData?.todaysAppointments || [];
+        }
+      } catch (error) {
+        console.error("Dashboard API Error:", error);
+
+        setError(
+          error.response?.data?.message ||
+          "Failed to load dashboard data"
+        );
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchDashboard();
+  }, []);
 
   const handleLogout = () => {
     localStorage.removeItem("token");
@@ -32,55 +67,6 @@ const Dashboard = () => {
   );
 
   const role = user.role;
-
-  const appointments = [
-    {
-      id: 1,
-      patient: "John Doe",
-      doctor: "Dr. Ali Khan",
-      time: "10:00 AM",
-      status: "Confirmed",
-    },
-    {
-      id: 2,
-      patient: "Sarah Smith",
-      doctor: "Dr. Ahmed",
-      time: "11:00 AM",
-      status: "Scheduled",
-    },
-    {
-      id: 3,
-      patient: "David Wilson",
-      doctor: "Dr. Ali Khan",
-      time: "12:30 PM",
-      status: "Confirmed",
-    },
-    {
-      id: 4,
-      patient: "Emily Johnson",
-      doctor: "Dr. Sarah",
-      time: "02:00 PM",
-      status: "Pending",
-    },
-  ];
-
-  const patients = [
-    {
-      name: "John Doe",
-      email: "john@example.com",
-      gender: "Male",
-    },
-    {
-      name: "Sarah Smith",
-      email: "sarah@example.com",
-      gender: "Female",
-    },
-    {
-      name: "David Wilson",
-      email: "david@example.com",
-      gender: "Male",
-    },
-  ];
 
   return (
     <div className="dashboard-wrapper">
@@ -157,7 +143,7 @@ const Dashboard = () => {
             </button>
           )}
 
-           {role === "ADMIN" && (
+          {role === "ADMIN" && (
             <button
               className="menu-item"
               onClick={() => navigate("/staff")}
@@ -219,6 +205,18 @@ const Dashboard = () => {
       {/* Main */}
 
       <main className="dashboard-main">
+
+        {loading && (
+          <div className="dashboard-loading">
+            Loading dashboard...
+          </div>
+        )}
+
+        {error && (
+          <div className="dashboard-error">
+            {error}
+          </div>
+        )}
 
         {/* Header */}
 
@@ -315,13 +313,13 @@ const Dashboard = () => {
                 <FaUserInjured />
               </div>
 
-              <div>
-                <p>Total Patients</p>
-                <h3>248</h3>
-                <span className="positive">
-                  +12% this month
-                </span>
-              </div>
+              <h3>
+                {dashboardData?.statistics?.totalPatients ?? 0}
+              </h3>
+
+              <span className="neutral">
+                Total registered patients
+              </span>
 
             </div>
 
@@ -331,29 +329,28 @@ const Dashboard = () => {
                 <FaUserMd />
               </div>
 
-              <div>
-                <p>Total Doctors</p>
-                <h3>24</h3>
-                <span className="positive">
-                  +2 this month
-                </span>
-              </div>
+              <h3>
+                {dashboardData?.statistics?.totalDoctors ?? 0}
+              </h3>
+
+              <span className="neutral">
+                {dashboardData?.statistics?.activeDoctors ?? 0} available
+              </span>
 
             </div>
 
             <div className="stat-card">
-
               <div className="stat-icon appointments">
                 <FaCalendarCheck />
               </div>
 
-              <div>
-                <p>Appointments</p>
-                <h3>18</h3>
-                <span className="neutral">
-                  Today
-                </span>
-              </div>
+              <h3>
+                {dashboardData?.statistics?.todaysAppointments ?? 0}
+              </h3>
+
+              <span className="neutral">
+                Today
+              </span>
 
             </div>
 
@@ -363,13 +360,16 @@ const Dashboard = () => {
                 <FaFileInvoiceDollar />
               </div>
 
-              <div>
-                <p>Today's Revenue</p>
-                <h3>₹45,800</h3>
-                <span className="positive">
-                  +8.4%
-                </span>
-              </div>
+              <h3>
+                ₹
+                {(
+                  dashboardData?.statistics?.todaysRevenue || 0
+                ).toLocaleString("en-IN")}
+              </h3>
+
+              <span className="neutral">
+                Today's collected amount
+              </span>
 
             </div>
 
@@ -412,35 +412,46 @@ const Dashboard = () => {
                   <span>Status</span>
                 </div>
 
-                {appointments.map(
-                  (appointment) => (
+                {appointments.length > 0 ? (
+                  appointments.map((appointment) => (
                     <div
                       className="table-row"
-                      key={appointment.id}
+                      key={appointment._id}
                     >
                       <span className="patient-name">
-                        {appointment.patient}
+                        {appointment.patient?.user?.name ||
+                          appointment.patient?.user?.username ||
+                          "Unknown Patient"}
                       </span>
 
                       <span>
-                        {appointment.doctor}
+                        {appointment.doctor?.user?.name ||
+                          appointment.doctor?.user?.username ||
+                          "Unknown Doctor"}
                       </span>
 
                       <span>
-                        {appointment.time}
+                        {new Date(
+                          appointment.appointmentDate
+                        ).toLocaleTimeString("en-IN", {
+                          hour: "2-digit",
+                          minute: "2-digit",
+                        })}
                       </span>
 
                       <span>
                         <span
-                          className={`status ${appointment.status
-                            .toLowerCase()
-                            }`}
+                          className={`status ${appointment.status.toLowerCase()}`}
                         >
                           {appointment.status}
                         </span>
                       </span>
                     </div>
-                  )
+                  ))
+                ) : (
+                  <div className="empty-state">
+                    No appointments scheduled for today.
+                  </div>
                 )}
 
               </div>
@@ -479,7 +490,7 @@ const Dashboard = () => {
 
                 <button
                   onClick={() =>
-                    navigate("/appointments")
+                    navigate("/appointments/add")
                   }
                 >
                   <FaCalendarCheck />
@@ -493,25 +504,17 @@ const Dashboard = () => {
                   </div>
                 </button>
 
-                <button
-                  onClick={() =>
-                    navigate("/doctors")
-                  }
-                >
-                  <FaUserMd />
-                  <div>
-                    <strong>
-                      Add Doctor
-                    </strong>
-                    <small>
-                      Register a doctor
-                    </small>
-                  </div>
-                </button>
+                <strong>
+                  Manage Doctors
+                </strong>
+
+                <small>
+                  View and manage doctors
+                </small>
 
                 <button
                   onClick={() =>
-                    navigate("/billing")
+                    navigate("/billing/add")
                   }
                 >
                   <FaFileInvoiceDollar />
@@ -561,35 +564,43 @@ const Dashboard = () => {
 
               <div className="patient-list">
 
-                {patients.map(
-                  (patient, index) => (
+                {patients.length > 0 ? (
+                  patients.map((patient) => (
                     <div
                       className="patient-item"
-                      key={index}
+                      key={patient._id}
                     >
-
                       <div className="patient-avatar">
-                        {patient.name
+                        {(
+                          patient.user?.name ||
+                          patient.user?.username ||
+                          "U"
+                        )
                           .charAt(0)
                           .toUpperCase()}
                       </div>
 
                       <div className="patient-details">
                         <strong>
-                          {patient.name}
+                          {patient.user?.name ||
+                            patient.user?.username ||
+                            "Unknown Patient"}
                         </strong>
 
                         <small>
-                          {patient.email}
+                          {patient.user?.email || "No email"}
                         </small>
                       </div>
 
                       <span>
-                        {patient.gender}
+                        {patient.gender || "N/A"}
                       </span>
-
                     </div>
-                  )
+                  ))
+                ) : (
+                  <div className="empty-state">
+                    No patients found.
+                  </div>
                 )}
 
               </div>
@@ -623,12 +634,24 @@ const Dashboard = () => {
 
                 <div>
                   <span>Active Doctors</span>
-                  <strong>18 / 24</strong>
+
+                  <strong>
+                    {dashboardData?.statistics?.activeDoctors || 0}
+                    {" / "}
+                    {dashboardData?.statistics?.totalDoctors || 0}
+                  </strong>
                 </div>
 
                 <div>
                   <span>Pending Bills</span>
-                  <strong>₹18,450</strong>
+
+                  <strong>
+                    ₹
+                    {(
+                      dashboardData?.statistics
+                        ?.pendingBillsAmount || 0
+                    ).toLocaleString("en-IN")}
+                  </strong>
                 </div>
 
                 <div>

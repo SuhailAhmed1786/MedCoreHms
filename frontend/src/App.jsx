@@ -36,6 +36,8 @@ import AddBilling from './pages/billing/AddBilling';
 import BillingDetails from "./pages/billing/BillingDetails";
 import EditBilling from "./pages/billing/EditBilling";
 
+import Settings from "./pages/settings/Settings";
+
 function App() {
   return (
     <BrowserRouter>
@@ -195,7 +197,7 @@ function App() {
 
             <Route
               path="/settings"
-              element={<div>Admin Settings</div>}
+              element={<Settings />}
             />
 
           </Route>
