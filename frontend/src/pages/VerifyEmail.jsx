@@ -1,25 +1,54 @@
-import { useEffect, useState } from "react";
+
+import { useEffect, useRef, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import api from "../services/api";
 
 const VerifyEmail = () => {
   const { token } = useParams();
 
+  const verificationStarted = useRef(false);
+
   const [loading, setLoading] = useState(true);
   const [success, setSuccess] = useState(false);
   const [message, setMessage] = useState("");
 
   useEffect(() => {
+    if (verificationStarted.current) {
+      return;
+    }
+
+    verificationStarted.current = true;
+
     const verifyEmail = async () => {
+      if (!token) {
+        setSuccess(false);
+        setMessage("Verification token is missing.");
+        setLoading(false);
+        return;
+      }
+
       try {
         const response = await api.get(
           `/auth/verify-email/${token}`
         );
 
-        setSuccess(true);
-        setMessage(response.data.message);
+        console.log(
+          "Email verification response:",
+          response.data
+        );
 
+        setSuccess(true);
+
+        setMessage(
+          response.data.message ||
+            "Email verified successfully."
+        );
       } catch (error) {
+        console.error(
+          "Email verification error:",
+          error
+        );
+
         setSuccess(false);
 
         setMessage(
@@ -31,16 +60,12 @@ const VerifyEmail = () => {
       }
     };
 
-    if (token) {
-      verifyEmail();
-    }
+    verifyEmail();
   }, [token]);
 
   return (
     <div className="auth-page">
-
       <div className="auth-card text-center">
-
         <div className="logo-icon">
           {loading ? "..." : success ? "✓" : "!"}
         </div>
@@ -72,9 +97,7 @@ const VerifyEmail = () => {
             Back to Registration
           </Link>
         )}
-
       </div>
-
     </div>
   );
 };

@@ -93,64 +93,105 @@ const register = async (req, res, next) => {
 
 }
 
+// const verifyEmail = async (req, res, next) => {
+//   try {
+//     const { token } = req.params;
+
+//     console.log("Token from URL:", token);
+
+//     const userByToken = await User.findOne({
+//       emailVerificationToken: token,
+//     });
+
+//     console.log("User by token:", userByToken);
+
+//     if (!userByToken) {
+//       return res.status(400).json({
+//         success: false,
+//         message: "Invalid verification token",
+//       });
+//     }
+
+//     console.log(
+//       "Stored expiry:",
+//       userByToken.emailVerificationExpires
+//     );
+
+//     console.log(
+//       "Current time:",
+//       new Date()
+//     );
+
+//     if (
+//       userByToken.emailVerificationExpires &&
+//       userByToken.emailVerificationExpires <= new Date()
+//     ) {
+//       return res.status(400).json({
+//         success: false,
+//         message: "Verification token has expired",
+//       });
+//     }
+
+//     userByToken.emailVerified = true;
+//     userByToken.emailVerificationToken = null;
+//     userByToken.emailVerificationExpires = null;
+
+//     await userByToken.save();
+
+//     return res.status(200).json({
+//       success: true,
+//       message: "Email verified successfully",
+//     });
+//   } catch (error) {
+//     next(error);
+//   }
+// };
+
+
 const verifyEmail = async (req, res, next) => {
   try {
     const { token } = req.params;
+    console.log("Token from URL12:", token);
 
-    console.log("Token from URL:", token);
-
-    const userByToken = await User.findOne({
+    const user = await User.findOne({
       emailVerificationToken: token,
     });
 
-    console.log("User by token:", userByToken);
-
-    if (!userByToken) {
+    if (!user) {
       return res.status(400).json({
         success: false,
-        message: "Invalid verification token",
+        message: "Invalid verification token.",
       });
     }
 
-    console.log(
-      "Stored expiry:",
-      userByToken.emailVerificationExpires
-    );
-
-    console.log(
-      "Current time:",
-      new Date()
-    );
-
     if (
-      userByToken.emailVerificationExpires &&
-      userByToken.emailVerificationExpires <= new Date()
+      !user.emailVerificationExpires ||
+      user.emailVerificationExpires < new Date()
     ) {
       return res.status(400).json({
         success: false,
-        message: "Verification token has expired",
+        message: "Verification token has expired.",
       });
     }
 
-    userByToken.emailVerified = true;
-    userByToken.emailVerificationToken = null;
-    userByToken.emailVerificationExpires = null;
-
-    await userByToken.save();
+    user.isEmailVerified = true;
+    user.emailVerificationToken = undefined;
+    user.emailVerificationExpires = undefined;
+    await user.save();
 
     return res.status(200).json({
       success: true,
-      message: "Email verified successfully",
+      message: "Email verified successfully.",
     });
   } catch (error) {
     next(error);
   }
 };
 
-
 const login = async (req, res, next) => {
   try {
     const { email, password } = req.body;
+    console.log("Received login data:", { email, password });
 
     // Validation
     if (!email || !password) {
@@ -175,7 +216,7 @@ const login = async (req, res, next) => {
     }
 
     // Check email verification
-    if (!user.emailVerified) {
+    if (!user.isEmailVerified) {
       return res.status(403).json({
         success: false,
         message: "Please verify your email before logging in",

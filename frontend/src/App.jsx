@@ -37,6 +37,7 @@ import BillingDetails from "./pages/billing/BillingDetails";
 import EditBilling from "./pages/billing/EditBilling";
 
 import Settings from "./pages/settings/Settings";
+import EditAppointment from "./pages/appointments/EditAppointment";
 
 function App() {
   return (
@@ -168,6 +169,8 @@ function App() {
               path="/appointments/:id"
               element={<AppointmentDetails />}
             />
+
+            <Route path="/appointments/edit/:id" element={<EditAppointment />} />
 
           </Route>
 

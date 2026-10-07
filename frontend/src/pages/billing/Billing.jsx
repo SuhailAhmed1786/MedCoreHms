@@ -80,6 +80,13 @@ const Billing = () => {
   return (
     <div className="billing-page">
       <div className="billing-header">
+        <button
+          type="button"
+          className="btn btn-outline-secondary mb-3"
+          onClick={() => navigate("/dashboard")}
+        >
+          ← Back
+        </button>
         <div>
           <h1>Billing</h1>
           <p>Manage patient invoices and payments</p>

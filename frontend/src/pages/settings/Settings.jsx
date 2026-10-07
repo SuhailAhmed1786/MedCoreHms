@@ -1,9 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./Settings.css";
+import api from "../../services/api";
 
 const Settings = () => {
   const [hospital, setHospital] = useState({
-    name: "MedCore Hospital",
+    name: "",
     email: "",
     phone: "",
     address: "",
@@ -14,6 +15,7 @@ const Settings = () => {
     billing: true,
     email: true,
   });
+
 
   const handleHospitalChange = (e) => {
     const { name, value } = e.target;
@@ -33,12 +35,46 @@ const Settings = () => {
     }));
   };
 
-  const handleSaveHospital = (e) => {
-    e.preventDefault();
+  useEffect(() => {
+    fetchAdminSettings();
+  }, []);
 
-    console.log("Hospital settings:", hospital);
+  const fetchAdminSettings = async () => {
+    try {
+      const response = await api.get("/admin-settings");
+      const data = response.data.data;
+      setHospital({
+        name: data.hospitalName,
+        email: data.email,
+        phone: data.phone,
+        address: data.address,
+      });
+    } catch (error) {
+      console.error("Error fetching admin settings:", error);
+    }
+  };
 
-    alert("Hospital settings saved successfully");
+  const handleSaveHospital = async (e) => {
+    try {
+      e.preventDefault();
+      console.log("Hospital settings:", hospital);
+      if (!hospital.name.trim() || hospital.email == "" || hospital.phone == "" || hospital.address == "") {
+        alert("All fields are required");
+      }
+      else {
+        await api.put("/admin-settings", {
+          hospitalName: hospital.name,
+          email: hospital.email,
+          phone: hospital.phone,
+          address: hospital.address,
+        });
+
+        alert("Hospital settings saved successfully");
+      }
+
+    } catch (error) {
+      console.error("Error saving hospital settings:", error);
+    }
   };
 
   return (

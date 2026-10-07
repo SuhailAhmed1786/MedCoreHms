@@ -17,9 +17,6 @@ import {
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../services//api";
-
-
-
 const Dashboard = () => {
   const navigate = useNavigate();
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -38,8 +35,6 @@ const Dashboard = () => {
 
         if (response.data.success) {
           setDashboardData(response.data.data);
-
-          // const appointments = dashboardData?.todaysAppointments || [];
         }
       } catch (error) {
         console.error("Dashboard API Error:", error);
@@ -291,7 +286,8 @@ const Dashboard = () => {
               </p>
             </div>
 
-            <button
+            
+                <button
               className="primary-btn"
               onClick={() =>
                 navigate("/appointments")
@@ -300,6 +296,8 @@ const Dashboard = () => {
               <FaPlus />
               New Appointment
             </button>
+            
+            
 
           </div>
 
@@ -460,7 +458,8 @@ const Dashboard = () => {
 
             {/* Quick Actions */}
 
-            <div className="dashboard-card">
+           
+                <div className="dashboard-card">
 
               <div className="card-header">
                 <div>
@@ -531,6 +530,7 @@ const Dashboard = () => {
               </div>
 
             </div>
+            
 
           </div>
 

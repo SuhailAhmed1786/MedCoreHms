@@ -4,7 +4,6 @@ const Doctor = require("../models/Doctor");
 
 const createStaffUser = async (req, res, next) => {
   let createdUser = null;
-
   try {
     const {
       username,

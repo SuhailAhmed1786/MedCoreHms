@@ -8,8 +8,10 @@ import {
   FaCheck,
   FaTimes,
   FaUserMd,
+  FaArrowLeft,
 } from "react-icons/fa";
 import api from "../../services/api";
+
 
 const Appointments = () => {
   const navigate = useNavigate();
@@ -144,6 +146,13 @@ const Appointments = () => {
     <div className="container-fluid py-4">
 
       {/* Header */}
+      <button
+          type="button"
+          className="btn btn-outline-secondary mb-3"
+          onClick={() => navigate("/dashboard")}
+        >
+          ← Back
+        </button>
       <div className="d-flex justify-content-between align-items-center mb-4">
         <div>
           <h2 className="mb-1">Appointments</h2>
@@ -151,6 +160,8 @@ const Appointments = () => {
             Manage patient appointments
           </p>
         </div>
+        
+        
 
         <button
           className="btn btn-primary"
@@ -367,7 +378,7 @@ const Appointments = () => {
                                   title="Edit"
                                   onClick={() =>
                                     navigate(
-                                      `/appointments/${appointment._id}/edit`
+                                      `/appointments/edit/${appointment._id}`
                                     )
                                   }
                                 >

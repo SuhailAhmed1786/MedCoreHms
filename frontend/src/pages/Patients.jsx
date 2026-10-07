@@ -7,20 +7,19 @@ import {
   FaEdit,
   FaTrash,
   FaUserInjured,
-  FaSyncAlt,
+  FaSyncAlt
+  
 } from "react-icons/fa";
 import api from "../services/api";
 
 const Patients = () => {
   const navigate = useNavigate();
-
   const [patients, setPatients] = useState([]);
   const [filteredPatients, setFilteredPatients] = useState([]);
 
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(true);
   const [deleteLoading, setDeleteLoading] = useState(null);
-
   const [error, setError] = useState("");
 
   // Get patients
@@ -28,9 +27,7 @@ const Patients = () => {
     try {
       setLoading(true);
       setError("");
-
       const response = await api.get("/patients");
-
       console.log("Patients API response:", response.data);
 
       const patientData = response.data?.data || [];
@@ -157,9 +154,17 @@ const Patients = () => {
 
   return (
     <div className="patients-page">
+      <button
+          type="button"
+          className="btn btn-outline-secondary mb-3"
+          onClick={() => navigate("/dashboard")}
+        >
+          ← Back
+        </button>
 
       {/* Header */}
       <div className="patients-header">
+        
 
         <div>
           <h2>
