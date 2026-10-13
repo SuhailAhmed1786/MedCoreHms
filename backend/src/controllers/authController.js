@@ -1,7 +1,6 @@
 const crypto = require("crypto");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-
 const User = require("../models/User");
 const {sendVerificationEmail} = require("../services/emailService");
 
@@ -92,61 +91,6 @@ const register = async (req, res, next) => {
 }
 
 }
-
-// const verifyEmail = async (req, res, next) => {
-//   try {
-//     const { token } = req.params;
-
-//     console.log("Token from URL:", token);
-
-//     const userByToken = await User.findOne({
-//       emailVerificationToken: token,
-//     });
-
-//     console.log("User by token:", userByToken);
-
-//     if (!userByToken) {
-//       return res.status(400).json({
-//         success: false,
-//         message: "Invalid verification token",
-//       });
-//     }
-
-//     console.log(
-//       "Stored expiry:",
-//       userByToken.emailVerificationExpires
-//     );
-
-//     console.log(
-//       "Current time:",
-//       new Date()
-//     );
-
-//     if (
-//       userByToken.emailVerificationExpires &&
-//       userByToken.emailVerificationExpires <= new Date()
-//     ) {
-//       return res.status(400).json({
-//         success: false,
-//         message: "Verification token has expired",
-//       });
-//     }
-
-//     userByToken.emailVerified = true;
-//     userByToken.emailVerificationToken = null;
-//     userByToken.emailVerificationExpires = null;
-
-//     await userByToken.save();
-
-//     return res.status(200).json({
-//       success: true,
-//       message: "Email verified successfully",
-//     });
-//   } catch (error) {
-//     next(error);
-//   }
-// };
-
 
 const verifyEmail = async (req, res, next) => {
   try {
@@ -281,7 +225,6 @@ const logout = async (req, res) => {
 
   }
 }
-
 
 module.exports = {
   register,

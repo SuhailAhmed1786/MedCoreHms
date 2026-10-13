@@ -149,7 +149,7 @@ function App() {
                 allowedRoles={[
                   "ADMIN",
                   "DOCTOR",
-                  "RECEPTIONIST",
+                  "RECEPTIONIST"
                 ]}
               />
             }

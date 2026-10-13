@@ -26,6 +26,7 @@ const Dashboard = () => {
   const [error, setError] = useState("");
   const appointments = dashboardData?.todaysAppointments || [];
   const patients = dashboardData?.recentPatients || [];
+  
   useEffect(() => {
     const fetchDashboard = async () => {
       try {
@@ -487,10 +488,7 @@ const Dashboard = () => {
                   </div>
                 </button>
 
-                <button
-                  onClick={() =>
-                    navigate("/appointments/add")
-                  }
+                <button onClick={() => navigate("/appointments/add")}
                 >
                   <FaCalendarCheck />
                   <div>
